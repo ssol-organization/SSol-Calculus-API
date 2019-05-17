@@ -9,8 +9,7 @@ app = Flask(__name__)
 
 @app.route('/test', methods=['GET'])
 def hellodois():
-    return jsonify({"tipo":0,
-                    "apoio1":1,
+    return jsonify({"apoio1":1,
                     "apoio2":2,
                     "apoio1p":1,
                     "apoio2p":3,
@@ -18,10 +17,17 @@ def hellodois():
                     "cargam":-10})
 
 
-@app.route('/get_diagram')
-def get_diagram():
+@app.route('/get_diagramz/<int:tipo>', methods=['GET'])
+def get_diagram(tipo):
     '''
-    Recebe os parametros, via json:
+    Recebe um parâmetro numerico que identifica o tipo de diagrama a ser retornado
+        0 = Estrutural
+        1 = Forças de reação
+        2 = Axial
+        3 = Cortante
+        4 = Fletor
+        5 = Displacement ?
+    Requisita os parâmetros, via json:
         apoio1 e apoio2, que são os tipos dos apoios
         apoio1pos e apoio2pos, que são as posições dos dois apoios
         cargap, que é a posição da carga
@@ -34,7 +40,6 @@ def get_diagram():
     
     r = requests.get('http://0.0.0.0:5000/test')
     
-    tipo = r.json().get('tipo')
     apoio1tipo, apoio2tipo  = r.json().get('apoio1'), r.json().get('apoio2')
     apoio1pos, apoio2pos = r.json().get('apoio1p'), r.json().get('apoio2p')
 
@@ -69,7 +74,23 @@ def get_diagram():
     #adição da carga
     ss.q_load(element_id=cargapos, q=cargamod)
     
-    return "working"
+    #geração dos diagramas
+    ss.solve()
+    img = io.BytesIO()
+    if tipo == 0:
+        ss.show_structure(show=False).savefig(img)
+    elif tipo == 1:
+    	ss.show_reaction_force(show=False).savefig(img)
+    elif tipo == 2:
+    	ss.show_axial_force(show=False).savefig(img)
+    elif tipo == 3:
+    	ss.show_shear_force(show=False).savefig(img)
+    elif tipo == 4:
+    	ss.show_bending_moment(show=False).savefig(img)
+    elif tipo == 5:
+    	ss.show_displacement(show=False).savefig(img) 	
+    img.seek(0)
+    return send_file(img, mimetype='image/png')
 
 
 if __name__ == '__main__':
