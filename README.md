@@ -1,6 +1,6 @@
 # Calculus API
 
-This microservice is dedicated to generate the diagrams that will be outputed to the users from the data input received from the Image Process API. It uses a virtual enviroment to execute with Flask and the python library AnaStruct to generate the output.
+Microsserviço construído em Flask que tem como objetivo gerar os diagramas feitos a partir da análise de estruturas da situação presente no experimento, consome a API de processamento de imagens para adquirir as informações das variaveis envolvidas na situação fisica.
 
 ## Endpoints
 ### ```/get_diagram```
