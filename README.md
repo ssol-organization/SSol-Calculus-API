@@ -5,11 +5,11 @@ This microservice is dedicated to generate the diagrams that will be outputed to
 ## Endpoints
 ### ```/get_diagram```
 
-Objetivo: Disponibilizar os diagramas referentes a um estado específico das váriaveis envolvidas no experimento.
+Objetivo: Disponibilizar os diagramas referentes a um estado específico das váriaveis envolvidas no experimento. Retorna uma imagem no formato png.
 
 #### Parâmetros: 
 
-##### ```tipo```: utilizado para escolher qual diagrama será mostrado, de acordo com a seguinte tabela: 
+##### ```tipo```: utilizado para escolher qual diagrama será mostrado, de acordo com a tabela abaixo. 
 
 | tipo | Descrição |
 | :--: | :--: |
@@ -19,6 +19,12 @@ Objetivo: Disponibilizar os diagramas referentes a um estado específico das vá
 | 3| Esforço Cortante|
 | 4| Momento Fletor|
 | 5| Displacement|
+
+## Exemplo de uso
+
+Nesse exemplo, o parâmetro do tipo foi o 0. Já a situação simulada foi a de dois apoios nas extremidades da barra, um de segundo gênero e um de primeiro, e uma carga pontual no centro, de 10N.
+
+![exemplo](https://i.imgur.com/aiuUnEh.png)
 
 
 <hr/>
