@@ -15,9 +15,9 @@ def hellodois():
                     "apoio2p":3,
                     "cargap":2,
                     "cargam":-10})
-    
-@app.route('/get_diagram/<int:tipo>', methods=['GET'])
-def get_diagram(tipo):
+
+@app.route('/get_diagram')
+def get_diagram():
     '''
     Recebe um parâmetro numerico que identifica o tipo de diagrama a ser retornado
         0 = Estrutural
@@ -36,7 +36,8 @@ def get_diagram(tipo):
         1 = Segundo gênero (hinged)
         2 = Tercêiro Gênero (fixed)
     '''
-    
+    tipo = int(request.args.get('tipo'))
+
     r = requests.get('http://0.0.0.0:5000/test')
     
     apoio1tipo, apoio2tipo  = r.json().get('apoio1'), r.json().get('apoio2')
