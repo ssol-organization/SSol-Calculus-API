@@ -10,14 +10,13 @@ app = Flask(__name__)
 @app.route('/test', methods=['GET'])
 def hellodois():
     return jsonify({"apoio1":1,
-                    "apoio2":2,
+                    "apoio2":0,
                     "apoio1p":1,
                     "apoio2p":3,
                     "cargap":2,
                     "cargam":-10})
-
-
-@app.route('/get_diagramz/<int:tipo>', methods=['GET'])
+    
+@app.route('/get_diagram/<int:tipo>', methods=['GET'])
 def get_diagram(tipo):
     '''
     Recebe um parâmetro numerico que identifica o tipo de diagrama a ser retornado
