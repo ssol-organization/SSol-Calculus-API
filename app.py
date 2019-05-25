@@ -38,7 +38,7 @@ def get_diagram():
     '''
     tipo = int(request.args.get('tipo'))
 
-    r = requests.get('http://0.0.0.0:5000/test')
+    r = requests.get('https://calculusapi.herokuapp.com/test')
     
     apoio1tipo, apoio2tipo  = r.json().get('apoio1'), r.json().get('apoio2')
     apoio1pos, apoio2pos = r.json().get('apoio1p'), r.json().get('apoio2p')
