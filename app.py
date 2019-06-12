@@ -10,11 +10,11 @@ app = Flask(__name__)
 @app.route('/test', methods=['GET'])
 def hellodois():
     return jsonify({"apoio1":1,
-                    "apoio2":0,
+                    "apoio2":1,
                     "apoio1p":1,
                     "apoio2p":3,
                     "cargap":2,
-                    "cargam":-10})
+                    "cargam":-40})
 
 @app.route('/get_diagram')
 def get_diagram():
@@ -47,7 +47,7 @@ def get_diagram():
     cargamod = r.json().get('cargam')
 
   
-    ss = SystemElements()
+    ss = SystemElements(EI=1900)
 
     #criação da barra
     ss.add_element(location=[[0, 0], [3, 0]])
