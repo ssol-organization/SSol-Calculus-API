@@ -1,6 +1,7 @@
 from flask import Flask, jsonify, send_file, request
 from anastruct import SystemElements
 from matplotlib import pyplot as plt
+from os import environ  
 import io
 import requests
 import json
@@ -91,8 +92,15 @@ def gennew():
         ]
     }
     '''
+    
+    if environ.get("ssolimurl"):
+        URL = environ.get("ssolimurl")
+    elif environ.get("localurl"):
+        URL = environ.get("localurl")
+    else:
+        URL = "http://0.0.0.0:5000/test"
 
-    r = requests.get('http://0.0.0.0:5000/test')
+    r = requests.get(URL)
     
     global parametros 
 
