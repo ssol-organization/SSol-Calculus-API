@@ -1,21 +1,113 @@
 from flask import Flask, jsonify, send_file, request
 from anastruct import SystemElements
 from matplotlib import pyplot as plt
+from os import environ  
 import io
 import requests
+import json
 
 app = Flask(__name__)
 
 
-@app.route('/test', methods=['GET'])
-def hellodois():
-    return jsonify({"apoio1":1,
-                    "apoio2":0,
-                    "apoio1p":1,
-                    "apoio2p":3,
-                    "cargap":2,
-                    "cargam":-10})
 
+def addap(ss,tipo,pos):
+    if tipo == 0:
+        ss.add_support_roll(node_id=pos)
+    elif tipo == 1:
+        ss.add_support_hinged(node_id=pos)
+    else:
+        ss.add_support_fixed(node_id=pos)
+
+def addloadD(ss,posi,posf,mod):
+
+    ss.q_load(element_id=list(range(posi,posf)),q=mod)
+
+
+def addloadP(ss,pos,mod):
+
+    ss.point_load(node_id=pos, Fy=mod)
+
+
+
+@app.route('/', methods=['GET'])
+def homep():
+
+    return "URL inválida. Por favor utilize /generate_new para requisitar nova foto e /get_diagram?tipo= para requisitar um diagrama"
+
+
+@app.route('/test', methods=['GET'])
+def jsonTest():
+
+    return jsonify({
+        "apoios":[
+           {"tipo":1,"posicao":1},
+           {"tipo":1,"posicao":11}
+        ],
+        "CargasP":[
+           {"posicao":2, "modulo":2}
+ 
+        ],
+        "CargasD": [
+            {"posicaoi":5, "posicaof":7, "modulo":40}        
+        ]
+    })
+
+
+@app.route('/generate_new')
+def gennew():
+    '''
+    Protocolo de comunicação
+
+    "apoios":[
+        {"tipo":,"posicao":},
+        {"tipo":,"posicao":},
+          .
+          .
+          .
+    ],
+    "CargasP": [
+        {"posicao":, "modulo":},
+        {"posicao":, "modulo":},
+           .
+           .
+           .
+    ]
+    "CargasD": [
+        {"posicaoi":,"posicaof":,"modulo":},
+        {"posicaoi":,"posicaof":,"modulo":},
+           .
+           .
+           .
+    ]
+
+    Exemplo:
+
+    {
+        "apoios":[
+                {"tipo":1,"posicao":1},
+                {"tipo":1,"posicao":11},
+        ],
+        "CargasP": [
+                {"posicao":5, "modulo":40},
+        ]
+    }
+    '''
+    
+    if environ.get("ssolimurl"):
+        URL = environ.get("ssolimurl")
+    elif environ.get("localurl"):
+        URL = environ.get("localurl")
+    else:
+        URL = "http://0.0.0.0:5000/test"
+
+    r = requests.get(URL)
+    
+    global parametros 
+
+    parametros = r.json()
+
+    return "Sucesso"
+ 
 @app.route('/get_diagram')
 def get_diagram():
     '''
@@ -36,43 +128,37 @@ def get_diagram():
         1 = Segundo gênero (hinged)
         2 = Tercêiro Gênero (fixed)
     '''
+    if not request.args.get('tipo'):
+        return "Erro, falta o parametro 'tipo', ex: /get_diagram?tipo=0 "
+    
     tipo = int(request.args.get('tipo'))
 
-    r = requests.get('https://calculusapi.herokuapp.com/test')
-    
-    apoio1tipo, apoio2tipo  = r.json().get('apoio1'), r.json().get('apoio2')
-    apoio1pos, apoio2pos = r.json().get('apoio1p'), r.json().get('apoio2p')
-
-    cargapos  = r.json().get('cargap')
-    cargamod = r.json().get('cargam')
-
-  
-    ss = SystemElements()
+    ss = SystemElements(EI=1900)
 
     #criação da barra
-    ss.add_element(location=[[0, 0], [3, 0]])
-    ss.add_element(location=[[3, 0], [8, 0]])
+    ss.add_multiple_elements([[0, 0], [10, 0]], 10)
+
     
     #adição do primeiro apoio
-    if apoio1tipo == 0:
-        ss.add_support_roll(node_id=apoio1pos)
-    elif apoio1tipo == 1:
-        ss.add_support_hinged(node_id=apoio1pos)
-    else:
-        ss.add_support_fixed(node_id=apoio1pos)
-
+    addap(ss,parametros['apoios'][0]['tipo'],parametros['apoios'][0]['posicao'])
     
     #adição do segundo apoio
-    if apoio2tipo == 0:
-        ss.add_support_roll(node_id=apoio2pos)
-    elif apoio2tipo == 1:
-        ss.add_support_hinged(node_id=apoio2pos)
-    else:
-        ss.add_support_fixed(node_id=apoio2pos)
-
+    addap(ss,parametros['apoios'][1]['tipo'],parametros['apoios'][1]['posicao'])
     
-    #adição da carga
-    ss.q_load(element_id=cargapos, q=cargamod)
+    #adição das cargas pontuais
+    if('CargasP' in parametros and parametros['CargasP'] and parametros['CargasP']!=" "):
+        
+        for cargaP in parametros['CargasP']:
+            addloadP(ss,cargaP['posicao'],-cargaP['modulo'])
+   
+
+    #adição das cargas distribuidas
+    if('CargasD' in parametros and parametros['CargasD'] and parametros['CargasD']!=" "):
+        
+        for cargaD in parametros['CargasD']:
+            addloadD(ss,cargaD['posicaoi'],cargaD['posicaof'],-cargaD['modulo'])    
+
+
     
     #geração dos diagramas
     ss.solve()
