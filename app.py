@@ -18,13 +18,21 @@ def addap(ss,tipo,pos):
         ss.add_support_fixed(node_id=pos)
 
 def addloadD(ss,posi,posf,mod):
-    
-    for i in range(posi,posf+1)
-        ss.q_load(element_id=pos,q=mod)
+
+    ss.q_load(element_id=list(range(posi,posf)),q=mod)
+
 
 def addloadP(ss,pos,mod):
 
     ss.point_load(node_id=pos, Fy=mod)
+
+
+
+@app.route('/', methods=['GET'])
+def homep():
+
+    return "URL inválida. Por favor utilize /generate_new para requisitar nova foto e /get_diagram?tipo= para requisitar um diagrama"
+
 
 @app.route('/test', methods=['GET'])
 def jsonTest():
@@ -32,10 +40,14 @@ def jsonTest():
     return jsonify({
         "apoios":[
            {"tipo":1,"posicao":1},
-           {"tipo":1,"posicao":11},
+           {"tipo":1,"posicao":11}
         ],
-        "CargasP": [
-            {"posicao":5, "modulo":40},
+        "CargasP":[
+           {"posicao":2, "modulo":2}
+ 
+        ],
+        "CargasD": [
+            {"posicaoi":5, "posicaof":7, "modulo":40}        
         ]
     })
 
@@ -108,8 +120,11 @@ def get_diagram():
         1 = Segundo gênero (hinged)
         2 = Tercêiro Gênero (fixed)
     '''
+    if not request.args.get('tipo'):
+        return "Erro, falta o parametro 'tipo', ex: /get_diagram?tipo=0 "
+    
     tipo = int(request.args.get('tipo'))
-  
+
     ss = SystemElements(EI=1900)
 
     #criação da barra
@@ -122,12 +137,14 @@ def get_diagram():
     #adição do segundo apoio
     addap(ss,parametros['apoios'][1]['tipo'],parametros['apoios'][1]['posicao'])
     
-
+    #adição das cargas pontuais
     if('CargasP' in parametros and parametros['CargasP'] and parametros['CargasP']!=" "):
         
         for cargaP in parametros['CargasP']:
             addloadP(ss,cargaP['posicao'],-cargaP['modulo'])
    
+
+    #adição das cargas distribuidas
     if('CargasD' in parametros and parametros['CargasD'] and parametros['CargasD']!=" "):
         
         for cargaD in parametros['CargasD']:
