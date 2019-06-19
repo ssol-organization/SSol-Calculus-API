@@ -46,8 +46,8 @@ def jsonTest():
 
     return jsonify({
         "apoios":[
-           {"tipo":1,"posicao":1},
-           {"tipo":1,"posicao":11}
+           {"tipo":0,"posicao":1},
+           {"tipo":0,"posicao":11}
         ],
         "CargasP":[
            {"posicao":2, "modulo":2}
