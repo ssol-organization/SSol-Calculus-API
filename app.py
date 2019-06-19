@@ -50,7 +50,7 @@ def jsonTest():
            {"tipo":0,"posicao":11}
         ],
         "CargasP":[
-           {"posicao":2, "modulo":2}
+           {"posicao":2, "modulo":10}
  
         ],
         "CargasD": [
