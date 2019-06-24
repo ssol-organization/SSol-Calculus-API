@@ -5,6 +5,7 @@ from os import environ
 import io
 import requests
 import json
+from PIL import Image
 
 app = Flask(__name__)
 
@@ -53,6 +54,7 @@ def jsonTest():
     })
 
 
+
 @app.route('/generate_new')
 def gennew():
     '''
@@ -95,8 +97,11 @@ def gennew():
     
     if environ.get("ssolimurl"):
         URL = environ.get("ssolimurl")
+    
     elif environ.get("localurl"):
         URL = environ.get("localurl")
+        URL += "/test" 
+
     else:
         URL = "http://0.0.0.0:5000/test"
 
@@ -108,8 +113,8 @@ def gennew():
 
     return "Sucesso"
  
-@app.route('/get_diagram')
-def get_diagram():
+@app.route('/temporary_diagram')
+def temporary_diagram():
     '''
     Recebe um parâmetro numerico que identifica o tipo de diagrama a ser retornado
         0 = Estrutural
@@ -177,6 +182,35 @@ def get_diagram():
     	ss.show_displacement(show=False).savefig(img) 	
     img.seek(0)
     return send_file(img, mimetype='image/png')
+
+
+@app.route('/get_diagram', methods=['GET'])
+def get_diagram():
+
+    if not request.args.get('tipo'):
+        return "Erro, falta o parametro 'tipo', ex: /get_diagram?tipo=0 "
+    
+    tipo = request.args.get('tipo')
+
+    if environ.get("localurl"):
+        URL = environ.get("localurl")
+    else: 
+        URL = "http://0.0.0.0:5000"
+
+    URL += "/temporary_diagram?tipo="+tipo
+
+    response = requests.get(URL)
+
+    imageObject  = Image.open(io.BytesIO(response.content))
+    
+    #left - upper - right - lower
+    cropped = imageObject.crop((220,280,1000,530))
+
+    mimg = io.BytesIO()
+    cropped.save(mimg, 'PNG')
+    mimg.seek(0)    
+
+    return send_file(mimg, mimetype='image/png')    
 
 
 if __name__ == '__main__':

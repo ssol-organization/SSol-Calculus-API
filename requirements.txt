@@ -2,3 +2,4 @@ Flask
 anastruct
 requests
 gunicorn
+Pillow
