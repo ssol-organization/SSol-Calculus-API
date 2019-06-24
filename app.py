@@ -36,13 +36,19 @@ def homep():
     return "URL inválida. Por favor utilize /generate_new para requisitar nova foto e /get_diagram?tipo= para requisitar um diagrama"
 
 
+@app.route('/current_variables', methods=['GET'])
+def getVariables():
+
+    return jsonify(parametros);
+
+
 @app.route('/test', methods=['GET'])
 def jsonTest():
 
     return jsonify({
         "apoios":[
            {"tipo":1,"posicao":1},
-           {"tipo":1,"posicao":11}
+           {"tipo":0,"posicao":11}
         ],
         "CargasP":[
            {"posicao":2, "modulo":2}
