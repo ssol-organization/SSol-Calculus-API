@@ -18,7 +18,7 @@ Objetivo: Disponibilizar os diagramas referentes a um estado específico das vá
 | 2| Axial|
 | 3| Esforço Cortante|
 | 4| Momento Fletor|
-| 5| Displacement|
+| 5| Deflexão|
 
 ## Exemplo de uso
 
