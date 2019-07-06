@@ -160,14 +160,14 @@ def temporary_diagram():
     if('CargasP' in parametros and parametros['CargasP'] and parametros['CargasP']!=" "):
         
         for cargaP in parametros['CargasP'][0]:
-            addloadP(ss,cargaP['posicao'],-cargaP['modulo'])
+            addloadP(ss,round(cargaP['posicao']/10),-cargaP['modulo'])
    
 
     #adição das cargas distribuidas
     if('CargasD' in parametros and parametros['CargasD'] and parametros['CargasD']!=" "):
         
         for cargaD in parametros['CargasD'][0]:
-            addloadD(ss,cargaD['posicaoi'],cargaD['posicaof'],-cargaD['modulo'])    
+            addloadD(ss,round(cargaD['posicaoi']/10),round(cargaD['posicaof']/10),-cargaD['modulo'])    
 
 
     
