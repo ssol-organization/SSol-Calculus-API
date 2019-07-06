@@ -20,12 +20,11 @@ def addap(ss,tipo,pos):
         ss.add_support_fixed(node_id=pos)
 
 def addloadD(ss,posi,posf,mod):
-
+    mod = round(mod/(posf-posi))
     ss.q_load(element_id=list(range(posi,posf)),q=mod)
 
 
 def addloadP(ss,pos,mod):
-
     ss.point_load(node_id=pos, Fy=mod)
 
 
@@ -167,7 +166,7 @@ def temporary_diagram():
     if('cargasD' in parametros and parametros['cargasD'] and parametros['cargasD']!=" "):
         
         for cargaD in parametros['cargasD'][0]:
-            addloadD(ss,round(int(cargaD['posicaoi'])/10),round(int(cargaD['posicaof'])/10),-int(cargaD['modulo']))    
+            addloadD(ss,round(int(cargaD['posicao_i'])/10),round(int(cargaD['posicao_f'])/10),-int(cargaD['modulo']))    
 
 
     
