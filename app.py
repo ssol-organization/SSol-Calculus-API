@@ -151,10 +151,10 @@ def temporary_diagram():
 
     
     #adição do primeiro apoio
-    addap(ss,parametros['apoios'][0][0],parametros['apoios'][0][1]['posicao'])
+    addap(ss,parametros['apoios'][0][0],round(parametros['apoios'][0][1]['posicao']/10))
     
     #adição do segundo apoio
-    addap(ss,parametros['apoios'][1][0],parametros['apoios'][1][1]['posicao'])
+    addap(ss,parametros['apoios'][1][0],round(parametros['apoios'][1][1]['posicao']/10))
     
     #adição das cargas pontuais
     if('CargasP' in parametros and parametros['CargasP'] and parametros['CargasP']!=" "):
