@@ -151,23 +151,23 @@ def temporary_diagram():
 
     
     #adição do primeiro apoio
-    addap(ss,parametros['apoios'][0][0],round(parametros['apoios'][0][1]['posicao']/10))
+    addap(ss,parametros['apoios'][0][0],round(int(parametros['apoios'][0][1]['posicao'])/10))
     
     #adição do segundo apoio
-    addap(ss,parametros['apoios'][1][0],round(parametros['apoios'][1][1]['posicao']/10))
+    addap(ss,parametros['apoios'][1][0],round(int(parametros['apoios'][1][1]['posicao'])/10))
     
     #adição das cargas pontuais
-    if('CargasP' in parametros and parametros['CargasP'] and parametros['CargasP']!=" "):
+    if('cargasP' in parametros and parametros['cargasP'] and parametros['cargasP']!=" "):
         
-        for cargaP in parametros['CargasP'][0]:
-            addloadP(ss,round(cargaP['posicao']/10),-cargaP['modulo'])
+        for cargaP in parametros['cargasP'][0]:
+            addloadP(ss,round(int(cargaP['posicao'])/10),-int(cargaP['modulo']))
    
 
     #adição das cargas distribuidas
-    if('CargasD' in parametros and parametros['CargasD'] and parametros['CargasD']!=" "):
+    if('cargasD' in parametros and parametros['cargasD'] and parametros['cargasD']!=" "):
         
-        for cargaD in parametros['CargasD'][0]:
-            addloadD(ss,round(cargaD['posicaoi']/10),round(cargaD['posicaof']/10),-cargaD['modulo'])    
+        for cargaD in parametros['cargasD'][0]:
+            addloadD(ss,round(int(cargaD['posicaoi'])/10),round(int(cargaD['posicaof'])/10),-int(cargaD['modulo']))    
 
 
     
