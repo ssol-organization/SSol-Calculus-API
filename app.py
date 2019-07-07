@@ -10,6 +10,39 @@ from PIL import Image
 app = Flask(__name__)
 
 
+def f(x, eq):
+    return eval(eq)
+
+def solveq(eq):
+
+    A = -1
+    B = 7
+    # Definir condições de parada
+    x_tol = 0.01
+    y_tol = 0.01
+    x_anterior = B
+    # Definir variável auxiliar para contagem de iterações
+    counter = 1
+    while True:
+        # Encontrar a próxima aproximação da raíz da função
+        xi = (B + A) / 2                           # Método da Bisseção
+        # Visualizar o gráfico
+        counter += 1
+        # Definir o novo intervalo
+        if f(A,eq) * f(xi,eq) < 0:
+            B = xi
+        elif f(A,eq) * f(xi,eq) == 0:
+            return xi
+        else:
+            A = xi
+        # Checar as condições de parada
+        # Eixo Y
+        if abs(f(xi,eq)) < y_tol:
+            break
+        # Eixo X
+        if abs(x_anterior - xi) < x_tol:
+            break
+        x_anterior = xi
 
 def addap(ss,tipo,pos):
     if tipo == 0:
@@ -27,6 +60,19 @@ def addloadD(ss,posi,posf,mod):
 def addloadP(ss,pos,mod):
     ss.point_load(node_id=pos, Fy=mod)
 
+def addloadT(ss,posi,posf,mod):
+    
+    eqstring = ""
+    for i in range(1,posf-posi+1):
+        eqstring += (str(i)+"*x + ")    
+    eqstring += ("-"+str(mod))
+    
+    imod = int(solveq(eqstring))
+      
+    c = 1
+    for i in range(posi,posf):
+        ss.q_load(element_id=i,q=-imod*c)
+        c += 1
 
 
 @app.route('/', methods=['GET'])
@@ -169,6 +215,12 @@ def temporary_diagram():
             addloadD(ss,round(int(cargaD['posicao_i'])/10),round(int(cargaD['posicao_f'])/10),-int(cargaD['modulo']))    
 
 
+    #adição das cargas triangulares
+    if('cargasT' in parametros and parametros['cargasT'] and parametros['cargasT']!=" "):
+        
+        for cargaT in parametros['cargasT'][0]:
+            addloadT(ss,round(int(cargaT['posicao_i'])/10),round(int(cargaT['posicao_f'])/10),int(cargaT['modulo']))    
+    
     
     #geração dos diagramas
     ss.solve()
