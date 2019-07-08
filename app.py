@@ -207,7 +207,11 @@ def temporary_diagram():
     addap(ss,parametros['apoios'][0][0],round(int(parametros['apoios'][0][1]['posicao'])/10))
     
     #adição do segundo apoio
-    addap(ss,parametros['apoios'][1][0],round(int(parametros['apoios'][1][1]['posicao'])/10))
+    if(round(int(parametros['apoios'][1][1]['posicao'])/10)<11):
+        newpos = round(int(parametros['apoios'][1][1]['posicao'])/10)+1
+    else:
+        newpos = round(int(parametros['apoios'][1][1]['posicao'])/10)
+    addap(ss,parametros['apoios'][1][0],newpos)
     
     #adição das cargas pontuais
     if('cargasP' in parametros and parametros['cargasP'] and parametros['cargasP']!=" "):
