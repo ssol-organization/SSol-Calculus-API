@@ -10,6 +10,9 @@ from PIL import Image
 app = Flask(__name__)
 
 
+parametros = ""
+
+
 def f(x, eq):
     return eval(eq)
 
@@ -187,6 +190,11 @@ def temporary_diagram():
     if not request.args.get('tipo'):
         return "Erro, falta o parametro 'tipo', ex: /get_diagram?tipo=0 "
     
+
+    if not 'parametros' in globals() or parametros == "":
+        return "Erro, falta gerar informações, use /generate_new"
+
+
     tipo = int(request.args.get('tipo'))
 
     ss = SystemElements(EI=1900)
@@ -238,7 +246,7 @@ def temporary_diagram():
     elif tipo == 5:
     	ss.show_displacement(show=False).savefig(img) 	
     img.seek(0)
-    return send_file(img, mimetype='image/png')
+    return send_file(img, mimetype='image/jpg')
 
 
 @app.route('/get_diagram', methods=['GET'])
@@ -257,17 +265,22 @@ def get_diagram():
     URL += "/temporary_diagram?tipo="+tipo
 
     response = requests.get(URL)
-
-    imageObject  = Image.open(io.BytesIO(response.content))
     
+    try:
+        imageObject  = Image.open(io.BytesIO(response.content))
+    
+    except Exception as e:
+        return send_file("error.jpg", mimetype='image/jpg')     
+
+
     #left - upper - right - lower
     cropped = imageObject.crop((220,280,1000,530))
 
     mimg = io.BytesIO()
-    cropped.save(mimg, 'PNG')
+    cropped.save(mimg, 'JPG')
     mimg.seek(0)    
 
-    return send_file(mimg, mimetype='image/png')    
+    return send_file(mimg, mimetype='image/jpg')    
 
 
 if __name__ == '__main__':
