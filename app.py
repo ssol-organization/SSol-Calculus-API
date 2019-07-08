@@ -277,10 +277,10 @@ def get_diagram():
     cropped = imageObject.crop((220,280,1000,530))
 
     mimg = io.BytesIO()
-    cropped.save(mimg, 'JPEG')
+    cropped.save(mimg, 'PNG')
     mimg.seek(0)    
 
-    return send_file(mimg, mimetype='image/jpg')    
+    return send_file(mimg, mimetype='image/png')    
 
 
 if __name__ == '__main__':
